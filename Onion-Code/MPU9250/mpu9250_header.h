@@ -11,6 +11,7 @@
  
 //#include "mbed.h"
 #include <math.h>
+#include <onion-i2c.h>
 // #include <windows.h>
  
 // See also MPU-9250 Register Map and Descriptions, Revision 4.0, RM-MPU-9250A-00, 
@@ -256,3 +257,11 @@ void MPU9250SelfTest(float * destination);
 void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
 void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, 
                              float gz, float mx, float my, float mz);
+//Read a Single Byte 	
+int i2c_readByte (int devNum, int devAddr, int addr, int *val)
+//Read Multiple Bytes 	
+int i2c_read (int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
+//Write to Buffer 	
+int i2c_writeBuffer,(int devNum, int devAddr, int addr, uint8_t *buffer, int size)
+//Directly Write to Address 	
+int i2c_writeBytes (int devNum, int devAddr, int addr, int val, int numBytes)
