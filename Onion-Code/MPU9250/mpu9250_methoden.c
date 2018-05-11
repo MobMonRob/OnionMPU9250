@@ -4,15 +4,15 @@
         char data_write[2];
         data_write[0] = subAddress;
         data_write[1] = data;
-        i2c.write(address, data_write, 2, 0);
+        i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
     }
  
  char readByte(uint8_t address, uint8_t subAddress){
         char data[1]; // `data` will store the register data     
         char data_write[1];
         data_write[0] = subAddress;
-        i2c.write(address, data_write, 1, 1); // no stop
-        i2c.read(address, data, 1, 0); 
+        i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
+        i2c_readByte(0, address, subAddress, data[0]); 
         return data[0]; 
     }
  
@@ -21,8 +21,8 @@
         char data[14];
         char data_write[1];
         data_write[0] = subAddress;
-        i2c.write(address, data_write, 1, 1); // no stop
-        i2c.read(address, data, count, 0); 
+        i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
+        i2c_read(0, address, subAddress, data, count); 
         for(int ii = 0; ii < count; ii++) {
          dest[ii] = data[ii];
         }

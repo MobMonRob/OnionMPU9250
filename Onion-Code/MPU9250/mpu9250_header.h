@@ -175,6 +175,7 @@
 #define MPU9250_ADDRESS 0x68<<1  // Device address when ADO = 0
 #endif  
 
+int rdByte;
 // Set initial input parameters
 enum Ascale {
   AFS_2G = 0,
@@ -258,10 +259,15 @@ void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, 
 void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, 
                              float gz, float mx, float my, float mz);
 //Read a Single Byte 	
-int i2c_readByte (int devNum, int devAddr, int addr, int *val)
+int i2c_readByte (int devNum, int devAddr, int addr, int *val);
 //Read Multiple Bytes 	
-int i2c_read (int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
+int i2c_read (int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes);
+// ------------------EXAMPLE--------------------------------------------------//
+//        int 	status;
+//        uint8_t	buffer[32];
+//        status 			= i2c_read(0, 0x48, 0x10, buffer, 2);
+///////////////////////////////////////////////////////////////////////////////
 //Write to Buffer 	
-int i2c_writeBuffer,(int devNum, int devAddr, int addr, uint8_t *buffer, int size)
+int i2c_writeBuffer (int devNum, int devAddr, int addr, uint8_t *buffer, int size);
 //Directly Write to Address 	
-int i2c_writeBytes (int devNum, int devAddr, int addr, int val, int numBytes)
+int i2c_writeBytes (int devNum, int devAddr, int addr, int val, int numBytes);

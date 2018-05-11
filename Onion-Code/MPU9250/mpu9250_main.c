@@ -15,7 +15,7 @@ char buffer[14]
 
 int main(){
 
-    t.start();
+    //t.start();
     
     //TODO
     //Set up I2C
@@ -70,7 +70,7 @@ int main(){
     while(1) {
   
         // If intPin goes high, all data registers have new data
-        if (readByte(MPU9250_ADDRESS, INT_STATUS) & 0x01) {  // On interrupt, check if data ready interrupt
+        if (i2c_readByte(0, MPU9250_ADDRESS, INT_STATUS, &rdByte) & 0x01) {  // On interrupt, check if data ready interrupt
 
           readAccelData(accelCount);  // Read the x/y/z adc values   
           // Now we'll calculate the accleration value into actual g's
