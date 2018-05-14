@@ -145,8 +145,9 @@
       sleep(100);
  }
  
+ // Initialize MPU9250 device
  void initMPU9250(){  
-      // Initialize MPU9250 device
+      
       // wake up device
       i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x00,1); // Clear sleep mode bit (6), enable all sensors 
       sleep(100); // sleep 100 ms for PLL to get established on x-axis gyro; should check for PLL ready interrupt  
@@ -166,7 +167,7 @@
       // Set gyroscope full scale range
       // Range selects FS_SEL and AFS_SEL are 0 - 3, so 2-bit values are left-shifted into positions 4:3
       uint8_t c;
-       i2c_readByte(0,MPU9250_ADDRESS, GYRO_CONFIG, &c);
+      i2c_readByte(0,MPU9250_ADDRESS, GYRO_CONFIG, &c);
       i2c_writeBytes(0, MPU9250_ADDRESS, GYRO_CONFIG, c & ~0xE0,4); // Clear self-test bits [7:5] 
       i2c_writeBytes(0, MPU9250_ADDRESS, GYRO_CONFIG, c & ~0x18,4 ); // Clear AFS bits [4:3]
       i2c_writeBytes(0, MPU9250_ADDRESS, GYRO_CONFIG, c | Gscale << 3,4); // Set full scale range for the gyro
@@ -193,7 +194,7 @@
       // can join the I2C bus and all can be controlled by the Arduino as master
       i2c_writeBytes(0,MPU9250_ADDRESS, INT_PIN_CFG, 0x22,1);    
       i2c_writeBytes(0,MPU9250_ADDRESS, INT_ENABLE, 0x01,1);  // Enable data ready (bit 0) interrupt
-    }
+ }
  
     // Function which accumulates gyro and accelerometer data after device 
     // initialization. It calculates the average
