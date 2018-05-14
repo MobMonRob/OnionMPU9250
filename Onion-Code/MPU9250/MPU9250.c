@@ -115,10 +115,12 @@ int main(){
 
             // als csv
             long timeinusec = getMicrotime()/1000;
-            printf("%f", timeinusec);
+            long time2 = getMicrotime();
+            printf("%lu", timeinusec);
+            printf("%lu", time2);
             printf(";%f", 1000*ax); 
             printf(";%f", 1000*ay); 
-            printf(";%f  mg\n\r", 1000*az); 
+            printf(";%f\n\r", 1000*az); 
         
             //printf("ax = %f", 1000*ax); 
             //printf(" ay = %f", 1000*ay); 
