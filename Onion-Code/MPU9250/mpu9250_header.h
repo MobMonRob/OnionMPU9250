@@ -11,7 +11,8 @@
  
 //#include "mbed.h"
 #include <math.h>
-#include <onion-i2c.h>
+#include "onion-i2c.h"
+#include <unistd.h>
 // #include <windows.h>
  
 // See also MPU-9250 Register Map and Descriptions, Revision 4.0, RM-MPU-9250A-00, 
@@ -164,7 +165,7 @@
 #define YA_OFFSET_L      0x7B
 #define ZA_OFFSET_H      0x7D
 #define ZA_OFFSET_L      0x7E
-
+#define PI 		 3.14159265358979323846
 // Using the MSENSR-9250 breakout board, ADO is set to 0 
 // Seven-bit device address is 110100 for ADO = 0 and 110101 for ADO = 1
 //mbed uses the eight-bit device address, so shift seven-bit addresses left by one!
@@ -203,9 +204,9 @@ uint8_t Mmode = 0x06;        // Either 8 Hz 0x02) or 100 Hz (0x06) magnetometer 
 float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
 
 //Set up I2C, (SDA,SCL)
-I2C i2c(I2C_SDA, I2C_SCL);
+//I2C i2c(I2C_SDA, I2C_SCL);
 
-DigitalOut myled(LED1);
+//DigitalOut myled(LED1);
     
 // Pin definitions
 int intPin = 12;  // These can be changed, 2 and 3 are the Arduinos ext int pins
@@ -224,11 +225,11 @@ int delt_t = 0; // used to control display output rate
 int count = 0;  // used to control display output rate
 
 // parameters for 6 DoF sensor fusion calculations
-float PI = 3.14159265358979323846f;
-float GyroMeasError = PI * (60.0f / 180.0f);     // gyroscope measurement error in rads/s (start at 60 deg/s), then reduce after ~10 s to 3
-float beta = sqrt(3.0f / 4.0f) * GyroMeasError;  // compute beta
-float GyroMeasDrift = PI * (1.0f / 180.0f);      // gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
-float zeta = sqrt(3.0f / 4.0f) * GyroMeasDrift;  // compute zeta, the other free parameter in the Madgwick scheme usually set to a small or zero value
+
+//float GyroMeasError = PI * (60.0 / 180.0);     // gyroscope measurement error in rads/s (start at 60 deg/s), then reduce after ~10 s to 3
+//float beta = sqrt(3.0 / 4.0) * GyroMeasError;  // compute beta
+//float GyroMeasDrift = PI * (1.0 / 180.0);      // gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
+//float zeta = sqrt(3.0 / 4.0) * GyroMeasDrift;  // compute zeta, the other free parameter in the Madgwick scheme usually set to a small or zero value
 #define Kp 2.0f * 5.0f // these are the free parameters in the Mahony filter and fusion scheme, Kp for proportional feedback, Ki for integral
 #define Ki 0.0f
 
@@ -241,7 +242,7 @@ float eInt[3] = {0.0f, 0.0f, 0.0f};              // vector to hold integral erro
 #endif 
 
 void writeByte(uint8_t address, uint8_t subAddress, uint8_t data);
-char readByte(uint8_t address, uint8_t subAddress);
+int readByte(uint8_t address, uint8_t subAddress);
 void readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8_t * dest);
 void getMres();
 void getGres();
