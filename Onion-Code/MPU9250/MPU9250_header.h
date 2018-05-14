@@ -9,11 +9,9 @@
 #ifndef MPU9250_H
 #define MPU9250_H
  
-//#include "mbed.h"
 #include <math.h>
 #include "onion-i2c.h"
 #include <unistd.h>
-// #include <windows.h>
  
 // See also MPU-9250 Register Map and Descriptions, Revision 4.0, RM-MPU-9250A-00, 
 // Rev. 1.4, 9/9/2013 for registers not listed in 
@@ -204,11 +202,6 @@ uint8_t Mscale = MFS_16BITS; // MFS_14BITS or MFS_16BITS, 14-bit or 16-bit magne
 uint8_t Mmode = 0x06;        // Either 8 Hz 0x02) or 100 Hz (0x06) magnetometer data ODR  
 float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
 
-//Set up I2C, (SDA,SCL)
-//I2C i2c(I2C_SDA, I2C_SCL);
-
-//DigitalOut myled(LED1);
-    
 // Pin definitions
 int intPin = 12;  // These can be changed, 2 and 3 are the Arduinos ext int pins
 
@@ -242,9 +235,9 @@ float eInt[3] = {0.0f, 0.0f, 0.0f};              // vector to hold integral erro
 
 #endif 
 
-void writeByte(uint8_t address, uint8_t subAddress, uint8_t data);
-int readByte(uint8_t address, uint8_t subAddress);
-void readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8_t * dest);
+//void writeByte(uint8_t address, uint8_t subAddress, uint8_t data);
+//int readByte(uint8_t address, uint8_t subAddress);
+//void readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8_t * dest);
 void getMres();
 void getGres();
 void getAres();
@@ -260,6 +253,9 @@ void MPU9250SelfTest(float * destination);
 void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
 void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, 
                              float gz, float mx, float my, float mz);
+
+// onion i2c methods
+
 //Read a Single Byte 	
 int i2c_readByte (int devNum, int devAddr, int addr, int *val);
 //Read Multiple Bytes 	
