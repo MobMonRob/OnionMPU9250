@@ -17,7 +17,9 @@ int main(){
     // Read the WHO_AM_I register, this is a good test of communication
     int status = i2c_readByte(0, MPU9250_ADDRESS, WHO_AM_I_MPU9250, &data);  // Read WHO_AM_I register for MPU-9250
     if (data == 0x71){ // WHO_AM_I should always be 0x75
+printf("in if-schleife");
         resetMPU9250(); // Reset registers to default in preparation for device calibration
+printf("nach reset");
         MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
         printf("x-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[0]);  
         printf("y-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[1]);  
@@ -32,7 +34,8 @@ int main(){
 //        pc.printf("x accel bias = %f\n\r", accelBias[0]);
 //        pc.printf("y accel bias = %f\n\r", accelBias[1]);
 //        pc.printf("z accel bias = %f\n\r", accelBias[2]);
-        sleep(2000);
+printf("nach calibrate");        
+sleep(2000);
         initMPU9250(); 
         printf("MPU9250 initialized for active data mode....\n\r"); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
         initAK8963(magCalibration);
@@ -46,7 +49,7 @@ int main(){
         sleep(1000);
     } else {
         printf("Could not connect to MPU9250: \n\r");
-        printf("%#x \n",  whoami);
+        printf("%#x \n",  data);
         while(1) ; // Loop forever if communication doesn't happen
     }
  
