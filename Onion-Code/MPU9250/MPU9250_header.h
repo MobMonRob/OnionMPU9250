@@ -168,12 +168,13 @@
 #define PI 		 3.14159265358979323846
 // Using the MSENSR-9250 breakout board, ADO is set to 0 
 // Seven-bit device address is 110100 for ADO = 0 and 110101 for ADO = 1
-//mbed uses the eight-bit device address, so shift seven-bit addresses left by one!
 #define ADO 0
 #if ADO
-#define MPU9250_ADDRESS 0x69<<1  // Device address when ADO = 1
+// mbed uses the eight-bit device address, so shift seven-bit addresses left by one: 0x69<<1
+#define MPU9250_ADDRESS 0x69  // Device address when ADO = 1
 #else
-#define MPU9250_ADDRESS 0x68  // Device address when ADO = 0 <<1
+// mbed uses the eight-bit device address, so shift seven-bit addresses left by one: 0x68<<1
+#define MPU9250_ADDRESS 0x68  // Device address when ADO = 0 
 #endif  
 
 int rdByte;
