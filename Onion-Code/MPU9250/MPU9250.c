@@ -111,23 +111,23 @@ int main(){
 
         // Serial print and/or display at 0.5 s rate independent of data rates
         //delt_t = t.read_ms() - count;
-        if (delt_t > 50) { // update LCD once per half-second (500) independent of read rate
+        //if (delt_t > 50) { // update LCD once per half-second (500) independent of read rate
 
             printf("ax = %f", 1000*ax); 
             printf(" ay = %f", 1000*ay); 
             printf(" az = %f  mg\n\r", 1000*az); 
 
-            printf("gx = %f", gx); 
-            printf(" gy = %f", gy); 
-            printf(" gz = %f  deg/s\n\r", gz); 
+            //printf("gx = %f", gx); 
+            //printf(" gy = %f", gy); 
+            //printf(" gz = %f  deg/s\n\r", gz); 
 
-            printf("mx = %f", mx); 
-            printf(" my = %f", my); 
-            printf(" mz = %f  mG\n\r", mz); 
+            //printf("mx = %f", mx); 
+            //printf(" my = %f", my); 
+            //printf(" mz = %f  mG\n\r", mz); 
 
             // tempCount = mpu9250.readTempData();  // Read the adc values
-            temperature = ((float) tempCount) / 333.87f + 21.0f; // Temperature in degrees Centigrade
-            printf(" temperature = %f  C\n\r", temperature); 
+            //temperature = ((float) tempCount) / 333.87f + 21.0f; // Temperature in degrees Centigrade
+            //printf(" temperature = %f  C\n\r", temperature); 
 
             //printf("q0 = %f\n\r", q[0]);
             //printf("q1 = %f\n\r", q[1]);
@@ -182,6 +182,6 @@ int main(){
 //            }
 //            sum = 0;
 //            sumCount = 0; 
-        }
+        //}
     }
 }
