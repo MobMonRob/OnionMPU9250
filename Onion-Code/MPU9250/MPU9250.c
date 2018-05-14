@@ -36,7 +36,7 @@ int main(){
         //printf("z accel bias = %f\n\r", accelBias[2]);
         //printf("nach calibrate\n\r");  
         
-        usleep(2000);
+        usleep(2000000);
         initMPU9250(); 
         printf("MPU9250 initialized for active data mode...\n\r"); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
         
@@ -48,7 +48,7 @@ int main(){
         if(Mscale == 1) printf("Magnetometer resolution = 16  bits\n\r");
         if(Mmode == 2) printf("Magnetometer ODR = 8 Hz\n\r");
         if(Mmode == 6) printf("Magnetometer ODR = 100 Hz\n\r");
-        usleep(1000);
+        usleep(1000000);
     } else {
         printf("Could not connect to MPU9250: \n\r");
         printf("%#x \n",  data);
