@@ -117,7 +117,7 @@ int main(){
             long timeinusec = getMicrotime()/1000;
             long time2 = getMicrotime();
             printf("%lu", timeinusec);
-            printf("%lu", time2);
+            printf(";%lu", time2);
             printf(";%f", 1000*ax); 
             printf(";%f", 1000*ay); 
             printf(";%f\n\r", 1000*az); 
