@@ -9,7 +9,7 @@ uint32_t sumCount = 0;
 char buffer[14];
 
 int main(){
-
+printf("main startet...");
     //t.start();
     int data;
     //i2c.frequency(400000);  // use fast (400 kHz) I2C 
