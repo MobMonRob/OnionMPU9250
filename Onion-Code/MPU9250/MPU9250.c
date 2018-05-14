@@ -71,8 +71,11 @@ int main(){
     while(1) {
   
         // If intPin goes high, all data registers have new data
-        if (i2c_readByte(0, MPU9250_ADDRESS, INT_STATUS, &rdByte) & 0x01) {  // On interrupt, check if data ready interrupt
-
+        // On interrupt, check if data ready interrupt
+        //if (i2c_readByte(0, MPU9250_ADDRESS, INT_STATUS, &rdByte) & 0x01) {  
+        i2c_readByte(0, MPU9250_ADDRESS, INT_STATUS, &rdByte);
+        if (rdByte & 0x01) {  
+            
           readAccelData(accelCount);  // Read the x/y/z adc values   
           // Now we'll calculate the accleration value into actual g's
           ax = (float)accelCount[0]*aRes - accelBias[0];  // get actual g value, this depends on scale being set
@@ -113,9 +116,14 @@ int main(){
         //delt_t = t.read_ms() - count;
         //if (delt_t > 50) { // update LCD once per half-second (500) independent of read rate
 
-            printf("ax = %f", 1000*ax); 
-            printf(" ay = %f", 1000*ay); 
-            printf(" az = %f  mg\n\r", 1000*az); 
+            // als csv
+            printf("%f", 1000*ax); 
+            printf(";%f", 1000*ay); 
+            printf(";%f  mg\n\r", 1000*az); 
+        
+            //printf("ax = %f", 1000*ax); 
+            //printf(" ay = %f", 1000*ay); 
+            //printf(" az = %f  mg\n\r", 1000*az); 
 
             //printf("gx = %f", gx); 
             //printf(" gy = %f", gy); 
