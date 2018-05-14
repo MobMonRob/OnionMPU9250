@@ -7,16 +7,14 @@ char buffer[14];
 
 int main(){
     printf("main startet...\n\r");
-    //t.start();
     int data;
-    //i2c.frequency(400000);  // use fast (400 kHz) I2C 
-
+    
     // Read the WHO_AM_I register, this is a good test of communication
     int status = i2c_readByte(0, MPU9250_ADDRESS, WHO_AM_I_MPU9250, &data);  // Read WHO_AM_I register for MPU-9250
     if (data == 0x71){ // WHO_AM_I should always be 0x75
-        printf("in if-schleife\n\r");
+        //printf("in if-schleife\n\r");
         resetMPU9250(); // Reset registers to default in preparation for device calibration
-        printf("MPU9250 reseted...\n\r");
+        //printf("MPU9250 reseted...\n\r");
         
         // führt zu plausiblen Ausgaben
         //MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
@@ -37,11 +35,13 @@ int main(){
         //printf("nach calibrate\n\r");  
         
         usleep(2000000);
+        // Initialize device for active mode read of acclerometer, gyroscope, and temperature
         initMPU9250(); 
-        printf("MPU9250 initialized for active data mode...\n\r"); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
+        printf("MPU9250 initialized for active data mode...\n\r"); 
         
+        // Initialize device for active mode read of magnetometer
         initAK8963(magCalibration);
-        printf("AK8963 initialized for active data mode...\n\r"); // Initialize device for active mode read of magnetometer
+        printf("AK8963 initialized for active data mode...\n\r"); 
         printf("Accelerometer full-scale range = %f  g\n\r", 2.0f*(float)(1<<Ascale));
         printf("Gyroscope full-scale range = %f  deg/s\n\r", 250.0f*(float)(1<<Gscale));
         if(Mscale == 0) printf("Magnetometer resolution = 14  bits\n\r");
@@ -113,7 +113,7 @@ int main(){
         //delt_t = t.read_ms() - count;
         //if (delt_t > 50) { // update LCD once per half-second (500) independent of read rate
 
-            // als csv
+            // ouput as csv
             long timeinusec = getMicrotime();
             printf("%lu", timeinusec);
             
