@@ -1,25 +1,17 @@
 #include "MPU9250_header.h"
 #include "mpu9250_methoden.c"
 // TODO
-// Initialisierung i2c
-// read/writeByte Methoden ersetzen
-// printf Aufruf entsprechend der onion lib
-// Timer ersetzen?
+// Initialisierung i2c?
+// printf Aufruf entsprechend der onion lib?
 
 float sum = 0;
 uint32_t sumCount = 0;
 char buffer[14];
 
-//TODO
-//
-//Timer t;
-
 int main(){
 
     //t.start();
     int data;
-    //TODO
-    //Set up I2C
     //i2c.frequency(400000);  // use fast (400 kHz) I2C 
 
     // Read the WHO_AM_I register, this is a good test of communication
