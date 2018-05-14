@@ -51,7 +51,7 @@ int main(){
         if(Mscale == 1) printf("Magnetometer resolution = 16  bits\n\r");
         if(Mmode == 2) printf("Magnetometer ODR = 8 Hz\n\r");
         if(Mmode == 6) printf("Magnetometer ODR = 100 Hz\n\r");
-        sleep(1000);
+        usleep(1000);
     } else {
         printf("Could not connect to MPU9250: \n\r");
         printf("%#x \n",  data);
