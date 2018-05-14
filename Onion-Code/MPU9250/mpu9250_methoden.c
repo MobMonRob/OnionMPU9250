@@ -122,27 +122,27 @@
  void resetMPU9250() {
       // reset device
       i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x80, 1); // Write a one to bit 7 reset bit; toggle reset device
-      sleep(100);
+      usleep(100);
  }
  
  void initAK8963(float * destination){
       // First extract the factory calibration for each magnetometer axis
       uint8_t rawData[3];  // x/y/z gyro calibration data stored here
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, 0x00, 1); // Power down magnetometer  
-      sleep(100);
+      usleep(100);
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, 0x0F, 1); // Enter Fuse ROM access mode
-      sleep(100);
+      usleep(100);
       i2c_read(0, AK8963_ADDRESS, AK8963_ASAX,  &rawData[0],3);  // Read the x-, y-, and z-axis calibration values
       destination[0] =  (float)(rawData[0] - 128)/256.0f + 1.0f;   // Return x-axis sensitivity adjustment values, etc.
       destination[1] =  (float)(rawData[1] - 128)/256.0f + 1.0f;  
       destination[2] =  (float)(rawData[2] - 128)/256.0f + 1.0f; 
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, 0x00, 1); // Power down magnetometer  
-      sleep(100);
+      usleep(100);
       // Configure the magnetometer for continuous read and highest resolution
       // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL register,
       // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, Mscale << 4 | Mmode, 4); // Set magnetometer data resolution and sample ODR
-      sleep(100);
+      usleep(100);
  }
  
  // Initialize MPU9250 device
@@ -150,7 +150,7 @@
       
       // wake up device
       i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x00,1); // Clear sleep mode bit (6), enable all sensors 
-      sleep(100); // sleep 100 ms for PLL to get established on x-axis gyro; should check for PLL ready interrupt  
+      usleep(100); // sleep 100 ms for PLL to get established on x-axis gyro; should check for PLL ready interrupt  
 
       // get stable time source
       i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x01,1);  // Set clock source to be PLL with x-axis gyroscope reference, bits 2:0 = 001
