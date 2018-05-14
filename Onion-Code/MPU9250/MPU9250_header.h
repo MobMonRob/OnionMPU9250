@@ -12,7 +12,7 @@
 #include <math.h>
 #include "onion-i2c.h"
 #include <unistd.h>
- 
+#include <time.h> 
 // See also MPU-9250 Register Map and Descriptions, Revision 4.0, RM-MPU-9250A-00, 
 // Rev. 1.4, 9/9/2013 for registers not listed in 
 // above document; the MPU9250 and MPU9150 are virtually identical but the latter 
@@ -253,6 +253,7 @@ void MPU9250SelfTest(float * destination);
 void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
 void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, 
                              float gz, float mx, float my, float mz);
+long getMicrotime();
 
 // onion i2c methods
 
