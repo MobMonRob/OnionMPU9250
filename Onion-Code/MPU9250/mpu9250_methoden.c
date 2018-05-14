@@ -16,17 +16,17 @@
 //        return data; 
 //    }
  
- void readBytes(uint8_t address, uint8_t subAddress, 
-                   uint8_t count, uint8_t * dest){     
-        char data[14];
-        char data_write[1];
-        data_write[0] = subAddress;
-        i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
-        i2c_read(0, address, subAddress, data, count); 
-        for(int ii = 0; ii < count; ii++) {
-         dest[ii] = data[ii];
-        }
-    } 
+ //void readBytes(uint8_t address, uint8_t subAddress, 
+ //                  uint8_t count, uint8_t * dest){     
+ //       char data[14];
+ //      char data_write[1];
+ //       data_write[0] = subAddress;
+ //       i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
+ //       i2c_read(0, address, subAddress, data, count); 
+ //       for(int ii = 0; ii < count; ii++) {
+ //        dest[ii] = data[ii];
+ //       }
+ //} 
  
  void getMres() {
       switch (Mscale){
@@ -39,7 +39,7 @@
               mRes = 10.0*4219.0/32760.0; // Proper scale to return milliGauss
               break;
       }
-    }
+ }
  
  void getGres() {
       switch (Gscale){
@@ -60,7 +60,7 @@
               gRes = 2000.0/32768.0;
               break;
       }
-    }
+  }
 
   void getAres() {
       switch (Ascale){
@@ -80,7 +80,7 @@
               aRes = 16.0/32768.0;
               break;
       }
-    }
+ }
   
  void readAccelData(int16_t * destination){
       uint8_t rawData[6];  // x/y/z accel register data stored here
@@ -88,7 +88,7 @@
       destination[0] = (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ;  // Turn the MSB and LSB into a signed 16-bit value
       destination[1] = (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;  
       destination[2] = (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ; 
-    }
+ }
  
  void readGyroData(int16_t * destination){
       uint8_t rawData[6];  // x/y/z gyro register data stored here
@@ -96,7 +96,7 @@
       destination[0] = (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ;  // Turn the MSB and LSB into a signed 16-bit value
       destination[1] = (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;  
       destination[2] = (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ; 
-    }
+ }
  
  void readMagData(int16_t * destination){
       int data;
@@ -111,19 +111,19 @@
         destination[2] = (int16_t)(((int16_t)rawData[5] << 8) | rawData[4]) ; 
        }
       }
-    }
+ }
  
  int16_t readTempData(){
       uint8_t rawData[2];  // x/y/z gyro register data stored here
       i2c_read(0, MPU9250_ADDRESS, TEMP_OUT_H,  &rawData[0],2);  // Read the two raw data registers sequentially into data array 
       return (int16_t)(((int16_t)rawData[0]) << 8 | rawData[1]) ;  // Turn the MSB and LSB into a 16-bit value
-    }
+ }
 
  void resetMPU9250() {
       // reset device
       i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x80, 1); // Write a one to bit 7 reset bit; toggle reset device
       sleep(100);
-    }
+ }
  
  void initAK8963(float * destination){
       // First extract the factory calibration for each magnetometer axis
@@ -143,7 +143,7 @@
       // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, Mscale << 4 | Mmode, 4); // Set magnetometer data resolution and sample ODR
       sleep(100);
-    }
+ }
  
  void initMPU9250(){  
       // Initialize MPU9250 device
