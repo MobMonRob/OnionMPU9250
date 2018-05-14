@@ -122,27 +122,27 @@
  void resetMPU9250() {
       // reset device
       i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x80, 1); // Write a one to bit 7 reset bit; toggle reset device
-      usleep(100);
+      usleep(100000);
  }
  
  void initAK8963(float * destination){
       // First extract the factory calibration for each magnetometer axis
       uint8_t rawData[3];  // x/y/z gyro calibration data stored here
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, 0x00, 1); // Power down magnetometer  
-      usleep(100);
+      usleep(100000);
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, 0x0F, 1); // Enter Fuse ROM access mode
-      usleep(100);
+      usleep(100000);
       i2c_read(0, AK8963_ADDRESS, AK8963_ASAX,  &rawData[0],3);  // Read the x-, y-, and z-axis calibration values
       destination[0] =  (float)(rawData[0] - 128)/256.0f + 1.0f;   // Return x-axis sensitivity adjustment values, etc.
       destination[1] =  (float)(rawData[1] - 128)/256.0f + 1.0f;  
       destination[2] =  (float)(rawData[2] - 128)/256.0f + 1.0f; 
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, 0x00, 1); // Power down magnetometer  
-      usleep(100);
+      usleep(100000);
       // Configure the magnetometer for continuous read and highest resolution
       // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL register,
       // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, Mscale << 4 | Mmode, 4); // Set magnetometer data resolution and sample ODR
-      usleep(100);
+      usleep(100000);
  }
  
  // Initialize MPU9250 device
@@ -150,7 +150,7 @@
       
       // wake up device
       i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x00,1); // Clear sleep mode bit (6), enable all sensors 
-      usleep(100); // sleep 100 ms for PLL to get established on x-axis gyro; should check for PLL ready interrupt  
+      usleep(100000); // sleep 100 ms for PLL to get established on x-axis gyro; should check for PLL ready interrupt  
 
       // get stable time source
       // 001 = Auto selects the best available clock source – PLL if ready, else use the Internal oscillator
@@ -209,13 +209,13 @@
 
         // reset device, reset all registers, clear gyro and accelerometer bias registers
         i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x80,1 ); // Write a one to bit 7 reset bit; toggle reset device
-        sleep(100);
+        usleep(100000);
 
         // get stable time source
         // Set clock source to be PLL with x-axis gyroscope reference, bits 2:0 = 001
         i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x01,1);  
         i2c_writeBytes(0,MPU9250_ADDRESS, PWR_MGMT_2, 0x00,1); 
-        sleep(200);
+        usleep(200000);
   
         // Configure device for bias calculation
         i2c_writeBytes(0,MPU9250_ADDRESS, INT_ENABLE, 0x00,1);   // Disable all interrupts
@@ -224,7 +224,7 @@
         i2c_writeBytes(0,MPU9250_ADDRESS, I2C_MST_CTRL, 0x00,1); // Disable I2C master
         i2c_writeBytes(0,MPU9250_ADDRESS, USER_CTRL, 0x00,1);    // Disable FIFO and I2C master modes
         i2c_writeBytes(0,MPU9250_ADDRESS, USER_CTRL, 0x0C,1);    // Reset FIFO and DMP
-        sleep(15);
+        usleep(15000);
 
         // Configure MPU9250 gyro and accelerometer for bias calculation
         i2c_writeBytes(0,MPU9250_ADDRESS, CONFIG, 0x01,1);      // Set low-pass filter to 188 Hz
@@ -238,7 +238,7 @@
         // Configure FIFO to capture accelerometer and gyro data for bias calculation
         i2c_writeBytes(0,MPU9250_ADDRESS, USER_CTRL, 0x40,1);   // Enable FIFO  
         i2c_writeBytes(0,MPU9250_ADDRESS, FIFO_EN, 0x78,1);     // Enable gyro and accelerometer sensors for FIFO (max size 512 bytes in MPU-9250)
-        sleep(40); // accumulate 40 samples in 80 milliseconds = 480 bytes
+        usleep(40000); // accumulate 40 samples in 80 milliseconds = 480 bytes
 
         // At end of sample accumulation, turn off FIFO sensor read
         i2c_writeBytes(0, MPU9250_ADDRESS, FIFO_EN, 0x00,1);        // Disable gyro and accelerometer sensors for FIFO
@@ -387,7 +387,7 @@
 	 // Configure the accelerometer for self-test
 	 i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG, 0xE0,1); // Enable self test on all three axes and set accelerometer range to +/- 2 g
 	 i2c_writeBytes(0,MPU9250_ADDRESS, GYRO_CONFIG, 0xE0,1); // Enable self test on all three axes and set gyro range to +/- 250 degrees/s
-	 sleep(25); // Delay a while to let the device stabilize
+	 usleep(25000); // Delay a while to let the device stabilize
 
 	 for( int ii = 0; ii < 200; ii++) { // get average self-test values of gyro and acclerometer
 
@@ -410,7 +410,7 @@
  // Configure the gyro and accelerometer for normal operation
    i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG, 0x00,1);
    i2c_writeBytes(0,MPU9250_ADDRESS, GYRO_CONFIG, 0x00,1);
-   sleep(25); // Delay a while to let the device stabilize
+   usleep(25000); // Delay a while to let the device stabilize
    
    // Retrieve accelerometer and gyro factory Self-Test Code from USR_Reg
    selfTest[0] = i2c_readByte(0, MPU9250_ADDRESS, SELF_TEST_X_ACCEL, &selfTest[0]); // X-axis accel self-test results
