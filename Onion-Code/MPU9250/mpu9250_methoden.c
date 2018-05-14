@@ -1000,3 +1000,9 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 
 	return (status);
 }
+
+long getMicrotime(){
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
+}
