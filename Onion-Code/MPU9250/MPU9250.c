@@ -114,7 +114,7 @@ int main(){
         //if (delt_t > 50) { // update LCD once per half-second (500) independent of read rate
 
             // als csv
-            long timeinusec =long getMicrotime();
+            long timeinusec = getMicrotime()/1000;
             printf("%f", timeinusec);
             printf(";%f", 1000*ax); 
             printf(";%f", 1000*ay); 
