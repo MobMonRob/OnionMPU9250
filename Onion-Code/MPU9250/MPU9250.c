@@ -9,7 +9,7 @@ uint32_t sumCount = 0;
 char buffer[14];
 
 int main(){
-printf("main startet...\n\r");
+    printf("main startet...\n\r");
     //t.start();
     int data;
     //i2c.frequency(400000);  // use fast (400 kHz) I2C 
@@ -17,9 +17,9 @@ printf("main startet...\n\r");
     // Read the WHO_AM_I register, this is a good test of communication
     int status = i2c_readByte(0, MPU9250_ADDRESS, WHO_AM_I_MPU9250, &data);  // Read WHO_AM_I register for MPU-9250
     if (data == 0x71){ // WHO_AM_I should always be 0x75
-printf("in if-schleife\n\r");
+        printf("in if-schleife\n\r");
         resetMPU9250(); // Reset registers to default in preparation for device calibration
-printf("nach reset\n\r");
+        printf("nach reset\n\r");
         MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
         printf("x-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[0]);  
         printf("y-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[1]);  
@@ -28,14 +28,14 @@ printf("nach reset\n\r");
         printf("y-axis self test: gyration trim within : %f of factory value\n\r", SelfTest[4]);  
         printf("z-axis self test: gyration trim within : %f of factory value\n\r", SelfTest[5]);  
         calibrateMPU9250(gyroBias, accelBias); // Calibrate gyro and accelerometers, load biases in bias registers  
-//        pc.printf("x gyro bias = %f\n\r", gyroBias[0]);
-//        pc.printf("y gyro bias = %f\n\r", gyroBias[1]);
-//        pc.printf("z gyro bias = %f\n\r", gyroBias[2]);
-//        pc.printf("x accel bias = %f\n\r", accelBias[0]);
-//        pc.printf("y accel bias = %f\n\r", accelBias[1]);
-//        pc.printf("z accel bias = %f\n\r", accelBias[2]);
-printf("nach calibrate\n\r");        
-sleep(2000);
+        //        pc.printf("x gyro bias = %f\n\r", gyroBias[0]);
+        //        pc.printf("y gyro bias = %f\n\r", gyroBias[1]);
+        //        pc.printf("z gyro bias = %f\n\r", gyroBias[2]);
+        //        pc.printf("x accel bias = %f\n\r", accelBias[0]);
+        //        pc.printf("y accel bias = %f\n\r", accelBias[1]);
+        //        pc.printf("z accel bias = %f\n\r", accelBias[2]);
+        printf("nach calibrate\n\r");        
+        sleep(2000);
         initMPU9250(); 
         printf("MPU9250 initialized for active data mode....\n\r"); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
         initAK8963(magCalibration);
@@ -102,11 +102,11 @@ sleep(2000);
 
         // Pass gyro rate as rad/s
         //  mpu9250.MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f,  my,  mx, mz);
-        MahonyQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
+        //MahonyQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
 
         // Serial print and/or display at 0.5 s rate independent of data rates
         //delt_t = t.read_ms() - count;
-        if (delt_t > 500) { // update LCD once per half-second independent of read rate
+        if (delt_t > 50) { // update LCD once per half-second (500) independent of read rate
 
             printf("ax = %f", 1000*ax); 
             printf(" ay = %f", 1000*ay); 
@@ -116,18 +116,18 @@ sleep(2000);
             printf(" gy = %f", gy); 
             printf(" gz = %f  deg/s\n\r", gz); 
 
-            printf("gx = %f", mx); 
-            printf(" gy = %f", my); 
-            printf(" gz = %f  mG\n\r", mz); 
+            printf("mx = %f", mx); 
+            printf(" my = %f", my); 
+            printf(" mz = %f  mG\n\r", mz); 
 
-           // tempCount = mpu9250.readTempData();  // Read the adc values
+            // tempCount = mpu9250.readTempData();  // Read the adc values
             temperature = ((float) tempCount) / 333.87f + 21.0f; // Temperature in degrees Centigrade
             printf(" temperature = %f  C\n\r", temperature); 
 
-            printf("q0 = %f\n\r", q[0]);
-            printf("q1 = %f\n\r", q[1]);
-            printf("q2 = %f\n\r", q[2]);
-            printf("q3 = %f\n\r", q[3]);      
+            //printf("q0 = %f\n\r", q[0]);
+            //printf("q1 = %f\n\r", q[1]);
+            //printf("q2 = %f\n\r", q[2]);
+            //printf("q3 = %f\n\r", q[3]);      
 
             /*    lcd.clear();
                 lcd.printString("MPU9250", 0, 0);
@@ -140,36 +140,36 @@ sleep(2000);
                 lcd.printString(buffer, 0, 4); 
              */ 
 
-            // Define output variables from updated quaternion---these are Tait-Bryan 
-            // angles, commonly used in aircraft orientation.
-            // In this coordinate system, the positive z-axis is down toward Earth. 
-            // Yaw is the angle between Sensor x-axis and Earth magnetic North (or true North if corrected for local declination, looking down on the sensor positive yaw is counterclockwise.
-            // Pitch is angle between sensor x-axis and Earth ground plane, toward the Earth is positive, up toward the sky is negative.
-            // Roll is angle between sensor y-axis and Earth ground plane, y-axis up is positive roll.
-            // These arise from the definition of the homogeneous rotation matrix constructed from quaternions.
-            // Tait-Bryan angles as well as Euler angles are non-commutative; that is, the get the correct orientation the rotations must be
-            // applied in the correct order which for this configuration is yaw, pitch, and then roll.
-            // For more see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles which has additional links.
-            yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);   
-            pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
-            roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
-            pitch *= 180.0f / PI;
-            yaw   *= 180.0f / PI; 
-            yaw   -= 13.8f; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
-            roll  *= 180.0f / PI;
+             // Define output variables from updated quaternion---these are Tait-Bryan 
+             // angles, commonly used in aircraft orientation.
+             // In this coordinate system, the positive z-axis is down toward Earth. 
+             // Yaw is the angle between Sensor x-axis and Earth magnetic North (or true North if corrected for local declination, looking down on the sensor positive yaw is counterclockwise.
+             // Pitch is angle between sensor x-axis and Earth ground plane, toward the Earth is positive, up toward the sky is negative.
+             // Roll is angle between sensor y-axis and Earth ground plane, y-axis up is positive roll.
+             // These arise from the definition of the homogeneous rotation matrix constructed from quaternions.
+             // Tait-Bryan angles as well as Euler angles are non-commutative; that is, the get the correct orientation the rotations must be
+             // applied in the correct order which for this configuration is yaw, pitch, and then roll.
+             // For more see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles which has additional links.
+             //yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);   
+             //pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+             //roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+             //pitch *= 180.0f / PI;
+             //yaw   *= 180.0f / PI; 
+             //yaw   -= 13.8f; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+             //roll  *= 180.0f / PI;
 
-            printf("Yaw, Pitch, Roll: %f %f %f\n\r", yaw, pitch, roll);
-            printf("average rate = %f\n\r", (float) sumCount/sum);
+             // printf("Yaw, Pitch, Roll: %f %f %f\n\r", yaw, pitch, roll);
+             // printf("average rate = %f\n\r", (float) sumCount/sum);
 
-            //    sprintf(buffer, "YPR: %f %f %f", yaw, pitch, roll);
-            //    lcd.printString(buffer, 0, 4);
-            //    sprintf(buffer, "rate = %f", (float) sumCount/sum);
-            //    lcd.printString(buffer, 0, 5);
+             //    sprintf(buffer, "YPR: %f %f %f", yaw, pitch, roll);
+             //    lcd.printString(buffer, 0, 4);
+             //    sprintf(buffer, "rate = %f", (float) sumCount/sum);
+             //    lcd.printString(buffer, 0, 5);
 
-            //myled= !myled;
-//            count = t.read_ms(); 
+             //myled= !myled;
+//           count = t.read_ms(); 
 
-//            if(count > 1<<21) {
+//           if(count > 1<<21) {
 //                t.start(); // start the timer over again if ~30 minutes has passed
 //                count = 0;
 //                deltat= 0;
