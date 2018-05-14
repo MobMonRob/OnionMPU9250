@@ -7,12 +7,12 @@
         i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
     }
  
- char readByte(uint8_t address, uint8_t subAddress){
-        char data[1]; // `data` will store the register data     
+ int readByte(uint8_t address, uint8_t subAddress){
+        int data[1]; // `data` will store the register data     
         char data_write[1];
         data_write[0] = subAddress;
         i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
-        i2c_readByte(0, address, subAddress, data[0]); 
+        i2c_readByte(0, address, subAddress, data); 
         return data[0]; 
     }
  
@@ -120,34 +120,34 @@
  void resetMPU9250() {
       // reset device
       writeByte(MPU9250_ADDRESS, PWR_MGMT_1, 0x80); // Write a one to bit 7 reset bit; toggle reset device
-      Sleep(100);
+      sleep(100);
     }
  
  void initAK8963(float * destination){
       // First extract the factory calibration for each magnetometer axis
       uint8_t rawData[3];  // x/y/z gyro calibration data stored here
       writeByte(AK8963_ADDRESS, AK8963_CNTL, 0x00); // Power down magnetometer  
-      Sleep(100);
+      sleep(100);
       writeByte(AK8963_ADDRESS, AK8963_CNTL, 0x0F); // Enter Fuse ROM access mode
-      Sleep(100);
+      sleep(100);
       readBytes(AK8963_ADDRESS, AK8963_ASAX, 3, &rawData[0]);  // Read the x-, y-, and z-axis calibration values
       destination[0] =  (float)(rawData[0] - 128)/256.0f + 1.0f;   // Return x-axis sensitivity adjustment values, etc.
       destination[1] =  (float)(rawData[1] - 128)/256.0f + 1.0f;  
       destination[2] =  (float)(rawData[2] - 128)/256.0f + 1.0f; 
       writeByte(AK8963_ADDRESS, AK8963_CNTL, 0x00); // Power down magnetometer  
-      Sleep(100);
+      sleep(100);
       // Configure the magnetometer for continuous read and highest resolution
       // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL register,
       // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
       writeByte(AK8963_ADDRESS, AK8963_CNTL, Mscale << 4 | Mmode); // Set magnetometer data resolution and sample ODR
-      Sleep(100);
+      sleep(100);
     }
  
  void initMPU9250(){  
       // Initialize MPU9250 device
       // wake up device
       writeByte(MPU9250_ADDRESS, PWR_MGMT_1, 0x00); // Clear sleep mode bit (6), enable all sensors 
-      Sleep(100); // Delay 100 ms for PLL to get established on x-axis gyro; should check for PLL ready interrupt  
+      sleep(100); // sleep 100 ms for PLL to get established on x-axis gyro; should check for PLL ready interrupt  
 
       // get stable time source
       writeByte(MPU9250_ADDRESS, PWR_MGMT_1, 0x01);  // Set clock source to be PLL with x-axis gyroscope reference, bits 2:0 = 001
@@ -203,13 +203,13 @@
 
         // reset device, reset all registers, clear gyro and accelerometer bias registers
         writeByte(MPU9250_ADDRESS, PWR_MGMT_1, 0x80); // Write a one to bit 7 reset bit; toggle reset device
-        Sleep(100);
+        sleep(100);
 
         // get stable time source
         // Set clock source to be PLL with x-axis gyroscope reference, bits 2:0 = 001
         writeByte(MPU9250_ADDRESS, PWR_MGMT_1, 0x01);  
         writeByte(MPU9250_ADDRESS, PWR_MGMT_2, 0x00); 
-        Sleep(200);
+        sleep(200);
   
         // Configure device for bias calculation
         writeByte(MPU9250_ADDRESS, INT_ENABLE, 0x00);   // Disable all interrupts
@@ -218,7 +218,7 @@
         writeByte(MPU9250_ADDRESS, I2C_MST_CTRL, 0x00); // Disable I2C master
         writeByte(MPU9250_ADDRESS, USER_CTRL, 0x00);    // Disable FIFO and I2C master modes
         writeByte(MPU9250_ADDRESS, USER_CTRL, 0x0C);    // Reset FIFO and DMP
-        Sleep(15);
+        sleep(15);
 
         // Configure MPU9250 gyro and accelerometer for bias calculation
         writeByte(MPU9250_ADDRESS, CONFIG, 0x01);      // Set low-pass filter to 188 Hz
@@ -232,7 +232,7 @@
         // Configure FIFO to capture accelerometer and gyro data for bias calculation
         writeByte(MPU9250_ADDRESS, USER_CTRL, 0x40);   // Enable FIFO  
         writeByte(MPU9250_ADDRESS, FIFO_EN, 0x78);     // Enable gyro and accelerometer sensors for FIFO (max size 512 bytes in MPU-9250)
-        Sleep(40); // accumulate 40 samples in 80 milliseconds = 480 bytes
+        sleep(40); // accumulate 40 samples in 80 milliseconds = 480 bytes
 
         // At end of sample accumulation, turn off FIFO sensor read
         writeByte(MPU9250_ADDRESS, FIFO_EN, 0x00);        // Disable gyro and accelerometer sensors for FIFO
@@ -381,7 +381,7 @@
 // Configure the accelerometer for self-test
    writeByte(MPU9250_ADDRESS, ACCEL_CONFIG, 0xE0); // Enable self test on all three axes and set accelerometer range to +/- 2 g
    writeByte(MPU9250_ADDRESS, GYRO_CONFIG, 0xE0); // Enable self test on all three axes and set gyro range to +/- 250 degrees/s
-   delay(25); // Delay a while to let the device stabilize
+   sleep(25); // Delay a while to let the device stabilize
 
   for( int ii = 0; ii < 200; ii++) { // get average self-test values of gyro and acclerometer
   
@@ -404,7 +404,7 @@
  // Configure the gyro and accelerometer for normal operation
    writeByte(MPU9250_ADDRESS, ACCEL_CONFIG, 0x00);
    writeByte(MPU9250_ADDRESS, GYRO_CONFIG, 0x00);
-   delay(25); // Delay a while to let the device stabilize
+   sleep(25); // Delay a while to let the device stabilize
    
    // Retrieve accelerometer and gyro factory Self-Test Code from USR_Reg
    selfTest[0] = readByte(MPU9250_ADDRESS, SELF_TEST_X_ACCEL); // X-axis accel self-test results
@@ -510,6 +510,7 @@
             s2 *= norm;
             s3 *= norm;
             s4 *= norm;
+int beta = 0;
 
             // Compute rate of change of quaternion
             qDot1 = 0.5f * (-q2 * gx - q3 * gy - q4 * gz) - beta * s1;
@@ -628,3 +629,370 @@
             q[3] = q4 * norm;
  
         }
+
+int _i2c_getFd(int adapterNum, int *devHandle)
+{
+	int 	status;
+	char 	pathname[255];
+
+	// define the path to open
+	status = snprintf(pathname, sizeof(pathname), I2C_DEV_PATH, adapterNum);
+
+	// check the filename
+	if (status < 0 || status >= sizeof(pathname)) {
+		// add errno
+        return EXIT_FAILURE;
+    }
+
+	// create a file descriptor for the I2C bus
+#ifdef I2C_ENABLED
+  	*devHandle = open(pathname, O_RDWR);
+#else
+  	*devHandle = 0;
+#endif
+
+  	// check the defvice handle
+  	if (*devHandle < 0) {
+  		// add errno
+  		return EXIT_FAILURE;
+  	}
+
+  	return EXIT_SUCCESS;
+}
+
+// release the device file handle
+int _i2c_releaseFd(int devHandle)
+{
+#ifdef I2C_ENABLED
+	if ( close(devHandle) < 0 ) {
+		return EXIT_FAILURE;
+	}
+#endif
+
+	return EXIT_SUCCESS;
+}
+
+// set the device address
+int _i2c_setDevice(int devHandle, int addr)
+{
+#ifdef I2C_ENABLED
+	// set to 7-bit addr
+	if ( ioctl(devHandle, I2C_TENBIT, 0) < 0 ) {
+		return EXIT_FAILURE;
+	}
+
+	// set the address
+	if ( ioctl(devHandle, I2C_SLAVE, addr) < 0 ) {
+		return EXIT_FAILURE;
+	}
+#endif
+
+	return EXIT_SUCCESS;
+}
+
+// set the 10bit device address
+int _i2c_setDevice10bit(int devHandle, int addr)
+{
+#ifdef I2C_ENABLED
+	// set to 10-bit addr
+	if ( ioctl(devHandle, I2C_TENBIT, 1) < 0 ) {
+		return EXIT_FAILURE;
+	}
+
+	// set the address
+	if ( _i2c_setDevice(devHandle, addr) != EXIT_SUCCESS ) {
+		return EXIT_FAILURE;
+	}
+#endif
+
+	return EXIT_SUCCESS;
+}
+
+// generic function to write a buffer to the i2c bus
+int _i2c_writeBuffer(int devNum, int devAddr, uint8_t *buffer, int size)
+{
+	int 	status;
+	int 	fd, index;
+
+	// open the file handle
+	status 	= _i2c_getFd(devNum, &fd);
+
+	// set the device address
+	if ( status == EXIT_SUCCESS ) {
+		status 	= _i2c_setDevice(fd, devAddr);
+	}
+
+	//onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "%s writing buffer:\n", I2C_PRINT_BANNER);
+	for (index = 0; index < size; index++) {
+		//onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\tbuffer[%d]: 0x%02x\n", index, buffer[index]);
+	}
+
+	// perform the write
+	if ( status == EXIT_SUCCESS ) {
+#ifdef I2C_ENABLED
+		// write to the i2c device
+		status = write(fd, buffer, size);
+		if (status != size) {
+			//onionPrint(ONION_SEVERITY_FATAL, "%s write issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, buffer[0], errno, strerror(errno) );
+			status 	= EXIT_FAILURE;
+		}
+		else {
+			status	= EXIT_SUCCESS;
+		}
+#endif
+ 	}
+
+ 	// release the device file handle
+ 	status 	|= _i2c_releaseFd(fd);
+
+	return (status);
+}
+
+// generic function to write a buffer to the i2c bus
+int i2c_writeBuffer(int devNum, int devAddr, int addr, uint8_t *buffer, int size)
+{
+	int 	status;
+	uint8_t *bufferNew;
+
+	// allocate the new buffer
+	size++;		// adding addr to buffer
+	bufferNew 	= malloc( size * sizeof *bufferNew );
+
+	// add the address to the data buffer
+	bufferNew[0]	= addr;
+	memcpy( &bufferNew[1], &buffer[0], size * sizeof *buffer );
+
+ 	// perform the write
+ 	status 	= _i2c_writeBuffer(devNum, devAddr, bufferNew, size);
+
+ 	// free the allocated memory
+ 	free(bufferNew);
+
+	return (status);
+}
+
+// generic function to write a buffer to the i2c bus (no in-device address
+int i2c_writeBufferRaw(int devNum, int devAddr, uint8_t *buffer, int size)
+{
+	return _i2c_writeBuffer(devNum, devAddr, buffer, size);
+}
+
+// write n bytes to the i2c bus
+int i2c_write(int devNum, int devAddr, int addr, int val)
+{
+	int 	status;
+	int 	size, tmp, index;
+	uint8_t	buffer[I2C_BUFFER_SIZE]; 
+
+	//// buffer setup
+	// clear the buffer
+	memset( buffer, 0, I2C_BUFFER_SIZE );
+	// push the address and data values into the buffer
+	buffer[0]	= (addr & 0xff);
+	buffer[1]	= (val & 0xff);
+	size 		= 2;
+
+	// if value is more than 1-byte, add to the buffer
+	tmp 	= (val >> 8);	// start with byte 1
+	index	= 2;
+	while (tmp > 0x00) {
+		buffer[index] = (uint8_t)(tmp & 0xff);
+
+		tmp	= tmp >> 8; // advance the tmp data by a byte
+		index++; 		// increment the index
+
+		size++;			// increase the size
+	}
+
+	//onionPrint(ONION_SEVERITY_DEBUG, "%s Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", I2C_PRINT_BANNER, devAddr, addr, val, (size-1) );
+
+	// write the buffer
+ 	status = _i2c_writeBuffer(devNum, devAddr, buffer, size);
+
+	return (status);
+}
+
+// write a specified number of bytes to the i2c bus
+int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
+{
+	int 	status;
+	int 	size, index;
+	uint8_t	buffer[I2C_BUFFER_SIZE];
+
+	//// buffer setup
+	// clear the buffer
+	memset( buffer, 0, sizeof(buffer) );
+	// push the address and data values into the buffer
+	buffer[0]	= (addr & 0xff);
+	size 		= 1;
+
+	// add all data bytes to buffer
+	index	= 1;
+	for (index = 0; index < numBytes; index++) {
+		buffer[index+1] = (uint8_t)( (val >> (8*index)) & 0xff );
+
+		size++;			// increase the size
+	}
+
+	//onionPrint(ONION_SEVERITY_DEBUG, "%s Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", I2C_PRINT_BANNER, devAddr, addr, val, (size-1) );
+
+	// write the buffer
+	status 	= _i2c_writeBuffer(devNum, devAddr, buffer, size);
+
+	return (status);
+}
+
+// read a byte from the i2c bus
+int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
+{
+	int 	status, size, index;
+	int 	fd;
+
+	//onionPrint(ONION_SEVERITY_DEBUG, "%s Reading %d byte%s from device 0x%02x: addr = 0x%02x", I2C_PRINT_BANNER, numBytes, (numBytes > 1 ? "s": ""), devAddr, addr);
+
+	// open the device file handle
+	status 	= _i2c_getFd(devNum, &fd);
+
+	// set the device address
+	if ( status == EXIT_SUCCESS ) {
+		status 	= _i2c_setDevice(fd, devAddr);
+	}
+
+	// perform the read 	
+	if ( status == EXIT_SUCCESS ) {
+		//// set addr
+		// clear the buffer
+		memset( buffer, 0, numBytes );
+		// push the address and data values into the buffer
+		buffer[0]	= (addr & 0xff);
+		size 		= 1;
+
+#ifdef I2C_ENABLED
+		// write to the i2c device
+		status = write(fd, buffer, size);
+		if (status != size) {
+			//onionPrint(ONION_SEVERITY_FATAL, "%s write issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, addr, errno, strerror(errno) );
+		}
+#endif
+
+		//// read data
+		// clear the buffer
+		memset( buffer, 0, numBytes );
+
+#ifdef I2C_ENABLED
+		// read from the i2c device
+		size 	= numBytes;
+		status 	= read(fd, buffer, size);
+		if (status != size) {
+			//onionPrint(ONION_SEVERITY_FATAL, "%s read issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, addr, errno, strerror(errno) );
+			status 	= EXIT_FAILURE;
+		}
+		else {
+			status 	= EXIT_SUCCESS;
+		}
+#else
+		buffer[0]	= 0x0;
+		size 		= 1;
+		/*
+		// for debug
+		printf("Setting buffer... it has length of %d\n", strlen(buffer) );
+		buffer[0] 	= 0x34;
+		buffer[1] 	= 0x12;
+		size = 2;
+		printf("Done setting buffer... it has length of %d\n", strlen(buffer) );
+		printf("size is %d\n", size);*/
+#endif		
+
+		//// print the data
+		//onionPrint(ONION_SEVERITY_DEBUG, "\tread %d byte%s, value: 0x", size, (size > 1 ? "s" : "") );
+
+		for (index = (size-1); index >= 0; index--) {
+			//onionPrint(ONION_SEVERITY_DEBUG, "%02x", (buffer[index] & 0xff) );
+		}
+		//onionPrint(ONION_SEVERITY_DEBUG, "\n");
+ 	}
+
+ 	// release the device file handle
+ 	status 	|= _i2c_releaseFd(fd);
+
+	return (status);
+}
+
+// read a byte from the i2c bus
+int i2c_readRaw(int devNum, int devAddr, uint8_t *buffer, int numBytes)
+{
+	int 	status, size, index;
+	int 	fd;
+
+	//onionPrint(ONION_SEVERITY_DEBUG, "%s Reading %d byte%s from device 0x%02x", I2C_PRINT_BANNER, numBytes, (numBytes > 1 ? "s": ""), devAddr);
+
+	// open the device file handle
+	status 	= _i2c_getFd(devNum, &fd);
+
+	// set the device address
+	if ( status == EXIT_SUCCESS ) {
+		status 	= _i2c_setDevice(fd, devAddr);
+	}
+
+	// perform the read
+	if ( status == EXIT_SUCCESS ) {
+		//// read data
+		// clear the buffer
+		memset( buffer, 0, I2C_BUFFER_SIZE );
+
+#ifdef I2C_ENABLED
+		// read from the i2c device
+		size 	= numBytes;
+		status 	= read(fd, buffer, size);
+		if (status != size) {
+			//onionPrint(ONION_SEVERITY_FATAL, "%s read issue, errno is %d: %s\n", I2C_PRINT_BANNER, errno, strerror(errno) );
+			status 	= EXIT_FAILURE;
+		}
+		else {
+			status 	= EXIT_SUCCESS;
+		}
+#else
+		buffer[0]	= 0x0;
+		size 		= 1;
+		/*
+		// for debug
+		printf("Setting buffer... it has length of %d\n", strlen(buffer) );
+		buffer[0] 	= 0x34;
+		buffer[1] 	= 0x12;
+		size = 2;
+		printf("Done setting buffer... it has length of %d\n", strlen(buffer) );
+		printf("size is %d\n", size);*/
+#endif
+
+		//// print the data
+		//onionPrint(ONION_SEVERITY_DEBUG, "\tread %d byte%s, value: 0x", size, (size > 1 ? "s" : "") );
+
+		for (index = (size-1); index >= 0; index--) {
+			//onionPrint(ONION_SEVERITY_DEBUG, "%02x", (buffer[index] & 0xff) );
+		}
+		//onionPrint(ONION_SEVERITY_DEBUG, "\n");
+ 	}
+
+ 	// release the device file handle
+ 	status 	|= _i2c_releaseFd(fd);
+
+	return (status);
+}
+
+// read a single byte from the i2c bus
+int i2c_readByte(int devNum, int devAddr, int addr, int *val)
+{
+	int 	status;
+	uint8_t	buffer[I2C_BUFFER_SIZE];
+
+	status	= i2c_read	(	devNum, 
+							devAddr, 
+							addr, 
+							buffer,
+							1
+						);
+
+	*val 	= (int)(buffer[0]);
+
+	return (status);
+}
