@@ -24,7 +24,7 @@ int main(){
 
     // Read the WHO_AM_I register, this is a good test of communication
     uint8_t whoami = readByte(MPU9250_ADDRESS, WHO_AM_I_MPU9250);  // Read WHO_AM_I register for MPU-9250
-    if (whoami == 0x71){ // WHO_AM_I should always be 0x68
+    if (whoami == 0x71){ // WHO_AM_I should always be 0x71
         resetMPU9250(); // Reset registers to default in preparation for device calibration
         MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
         printf("x-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[0]);  
