@@ -349,60 +349,60 @@
 
     
     void MPU9250SelfTest(float * destination){ // Should return percent deviation from factory trim values, +/- 14 or less deviation is a pass
-  uint8_t rawData[6] = {0, 0, 0, 0, 0, 0};
-  uint8_t selfTest[6];
-  int16_t gAvg[3], aAvg[3], aSTAvg[3], gSTAvg[3];
-  float factoryTrim[6];
-  uint8_t FS = 0;
+	  uint8_t rawData[6] = {0, 0, 0, 0, 0, 0};
+	  uint8_t selfTest[6];
+	  int16_t gAvg[3], aAvg[3], aSTAvg[3], gSTAvg[3];
+	  float factoryTrim[6];
+	  uint8_t FS = 0;
    
-  i2c_writeBytes(0,MPU9250_ADDRESS, SMPLRT_DIV, 0x00,1);    // Set gyro sample rate to 1 kHz
-  i2c_writeBytes(0,MPU9250_ADDRESS, CONFIG, 0x02,1);        // Set gyro sample rate to 1 kHz and DLPF to 92 Hz
-  i2c_writeBytes(0,MPU9250_ADDRESS, GYRO_CONFIG, 1<<FS,1);  // Set full scale range for the gyro to 250 dps
-  i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG2, 0x02,1); // Set accelerometer rate to 1 kHz and bandwidth to 92 Hz
-  i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG, 1<<FS,1); // Set full scale range for the accelerometer to 2 g
+	  i2c_writeBytes(0,MPU9250_ADDRESS, SMPLRT_DIV, 0x00,1);    // Set gyro sample rate to 1 kHz
+	  i2c_writeBytes(0,MPU9250_ADDRESS, CONFIG, 0x02,1);        // Set gyro sample rate to 1 kHz and DLPF to 92 Hz
+	  i2c_writeBytes(0,MPU9250_ADDRESS, GYRO_CONFIG, 1<<FS,1);  // Set full scale range for the gyro to 250 dps
+	  i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG2, 0x02,1); // Set accelerometer rate to 1 kHz and bandwidth to 92 Hz
+	  i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG, 1<<FS,1); // Set full scale range for the accelerometer to 2 g
 
-  for( int ii = 0; ii < 200; ii++) { // get average current values of gyro and acclerometer
-  
-    // Read the six raw data registers into data array
-    i2c_read(0,MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6); 
-    aAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
-    aAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
-    aAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
+	  for( int ii = 0; ii < 200; ii++) { // get average current values of gyro and acclerometer
 
-    // Read the six raw data registers sequentially into data array
-    i2c_read(0,MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6); 
-    gAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
-    gAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
-    gAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
-  }
-  
-  for (int ii =0; ii < 3; ii++) { // Get average of 200 values and store as average current readings
-    aAvg[ii] /= 200;
-    gAvg[ii] /= 200;
-  }
-  
-// Configure the accelerometer for self-test
-   i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG, 0xE0,1); // Enable self test on all three axes and set accelerometer range to +/- 2 g
-   i2c_writeBytes(0,MPU9250_ADDRESS, GYRO_CONFIG, 0xE0,1); // Enable self test on all three axes and set gyro range to +/- 250 degrees/s
-   sleep(25); // Delay a while to let the device stabilize
+	    // Read the six raw data registers into data array
+	    i2c_read(0,MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6); 
+	    aAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
+	    aAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
+	    aAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
 
-  for( int ii = 0; ii < 200; ii++) { // get average self-test values of gyro and acclerometer
+	    // Read the six raw data registers sequentially into data array
+	    i2c_read(0,MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6); 
+	    gAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
+	    gAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
+	    gAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
+ 	  }
   
-  i2c_read(0,MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6); // Read the six raw data registers into data array
-  aSTAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
-  aSTAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
-  aSTAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
+	  for (int ii =0; ii < 3; ii++) { // Get average of 200 values and store as average current readings
+	    aAvg[ii] /= 200;
+	    gAvg[ii] /= 200;
+	  }
   
-    i2c_read(0, MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6); // Read the six raw data registers sequentially into data array
-  gSTAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
-  gSTAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
-  gSTAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
-  }
-  
-  for (int ii =0; ii < 3; ii++) { // Get average of 200 values and store as average self-test readings
-  aSTAvg[ii] /= 200;
-  gSTAvg[ii] /= 200;
-  }
+	 // Configure the accelerometer for self-test
+	 i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG, 0xE0,1); // Enable self test on all three axes and set accelerometer range to +/- 2 g
+	 i2c_writeBytes(0,MPU9250_ADDRESS, GYRO_CONFIG, 0xE0,1); // Enable self test on all three axes and set gyro range to +/- 250 degrees/s
+	 sleep(25); // Delay a while to let the device stabilize
+
+	 for( int ii = 0; ii < 200; ii++) { // get average self-test values of gyro and acclerometer
+
+	   i2c_read(0,MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6); // Read the six raw data registers into data array
+	   aSTAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
+	   aSTAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
+	   aSTAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
+
+	   i2c_read(0, MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6); // Read the six raw data registers sequentially into data array
+	   gSTAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
+	   gSTAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
+	   gSTAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
+	 }
+
+	 for (int ii =0; ii < 3; ii++) { // Get average of 200 values and store as average self-test readings
+	    aSTAvg[ii] /= 200;
+	    gSTAvg[ii] /= 200;
+	 }
   
  // Configure the gyro and accelerometer for normal operation
    i2c_writeBytes(0,MPU9250_ADDRESS, ACCEL_CONFIG, 0x00,1);
