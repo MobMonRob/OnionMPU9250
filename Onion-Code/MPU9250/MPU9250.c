@@ -20,24 +20,29 @@ int main(){
         printf("in if-schleife\n\r");
         resetMPU9250(); // Reset registers to default in preparation for device calibration
         printf("nach reset\n\r");
-        MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
-        printf("x-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[0]);  
-        printf("y-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[1]);  
-        printf("z-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[2]);  
-        printf("x-axis self test: gyration trim within : %f of factory value\n\r", SelfTest[3]);  
-        printf("y-axis self test: gyration trim within : %f of factory value\n\r", SelfTest[4]);  
-        printf("z-axis self test: gyration trim within : %f of factory value\n\r", SelfTest[5]);  
-        calibrateMPU9250(gyroBias, accelBias); // Calibrate gyro and accelerometers, load biases in bias registers  
-        //        pc.printf("x gyro bias = %f\n\r", gyroBias[0]);
-        //        pc.printf("y gyro bias = %f\n\r", gyroBias[1]);
-        //        pc.printf("z gyro bias = %f\n\r", gyroBias[2]);
-        //        pc.printf("x accel bias = %f\n\r", accelBias[0]);
-        //        pc.printf("y accel bias = %f\n\r", accelBias[1]);
-        //        pc.printf("z accel bias = %f\n\r", accelBias[2]);
-        printf("nach calibrate\n\r");        
-        sleep(2000);
+        
+        // führt zu plausiblen Ausgaben
+        //MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
+        //printf("x-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[0]);  
+        //printf("y-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[1]);  
+        //printf("z-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[2]);  
+        //printf("x-axis self test: gyration trim within : %f of factory value\n\r", SelfTest[3]);  
+        //printf("y-axis self test: gyration trim within : %f of factory value\n\r", SelfTest[4]);  
+        //printf("z-axis self test: gyration trim within : %f of factory value\n\r", SelfTest[5]);  
+        
+        //calibrateMPU9250(gyroBias, accelBias); // Calibrate gyro and accelerometers, load biases in bias registers  
+        //printf("x gyro bias = %f\n\r", gyroBias[0]);
+        //printf("y gyro bias = %f\n\r", gyroBias[1]);
+        //printf("z gyro bias = %f\n\r", gyroBias[2]);
+        //printf("x accel bias = %f\n\r", accelBias[0]);
+        //printf("y accel bias = %f\n\r", accelBias[1]);
+        //printf("z accel bias = %f\n\r", accelBias[2]);
+        //printf("nach calibrate\n\r");  
+        
+        //sleep(2000);
         initMPU9250(); 
         printf("MPU9250 initialized for active data mode....\n\r"); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
+        
         initAK8963(magCalibration);
         printf("AK8963 initialized for active data mode....\n\r"); // Initialize device for active mode read of magnetometer
         printf("Accelerometer full-scale range = %f  g\n\r", 2.0f*(float)(1<<Ascale));
