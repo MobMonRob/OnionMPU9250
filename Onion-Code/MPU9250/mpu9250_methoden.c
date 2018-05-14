@@ -14,7 +14,7 @@
         i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
         i2c_readByte(0, address, subAddress, data); 
         return data[0]; 
-    }
+ }
  
  void readBytes(uint8_t address, uint8_t subAddress, 
                    uint8_t count, uint8_t * dest){     
@@ -24,9 +24,9 @@
         i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
         i2c_read(0, address, subAddress, data, count); 
         for(int ii = 0; ii < count; ii++) {
-         dest[ii] = data[ii];
+           dest[ii] = data[ii];
         }
-    } 
+ } 
  
  void getMres() {
       switch (Mscale){
@@ -39,7 +39,7 @@
               mRes = 10.0*4219.0/32760.0; // Proper scale to return milliGauss
               break;
       }
-    }
+ }
  
  void getGres() {
       switch (Gscale){
