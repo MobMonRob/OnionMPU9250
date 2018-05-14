@@ -84,7 +84,7 @@
   
  void readAccelData(int16_t * destination){
       uint8_t rawData[6];  // x/y/z accel register data stored here
-      i2c_readBytes(0, MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6);  // Read the six raw data registers into data array
+      i2c_read(0, MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6);  // Read the six raw data registers into data array
       destination[0] = (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ;  // Turn the MSB and LSB into a signed 16-bit value
       destination[1] = (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;  
       destination[2] = (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ; 
@@ -92,7 +92,7 @@
  
  void readGyroData(int16_t * destination){
       uint8_t rawData[6];  // x/y/z gyro register data stored here
-      i2c_readBytes(0, MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6);  // Read the six raw data registers sequentially into data array
+      i2c_read(0, MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6);  // Read the six raw data registers sequentially into data array
       destination[0] = (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ;  // Turn the MSB and LSB into a signed 16-bit value
       destination[1] = (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;  
       destination[2] = (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ; 
@@ -101,9 +101,9 @@
  void readMagData(int16_t * destination){
       int data;
       uint8_t rawData[7];  // x/y/z gyro register data, ST2 register stored here, must read ST2 at end of data acquisition
-      i2c_readByte(0, AK8963_ADDRESS, AK8963_ST1,&data)
+      i2c_readByte(0, AK8963_ADDRESS, AK8963_ST1,&data);
       if(data & 0x01) { // wait for magnetometer data ready bit to be set
-      i2c_readBytes(0, AK8963_ADDRESS, AK8963_XOUT_L,  &rawData[0],7);  // Read the six raw data and ST2 registers sequentially into data array
+      i2c_read(0, AK8963_ADDRESS, AK8963_XOUT_L,  &rawData[0],7);  // Read the six raw data and ST2 registers sequentially into data array
       uint8_t c = rawData[6]; // End data read by reading ST2 register
         if(!(c & 0x08)) { // Check if magnetic sensor overflow set, if not then report data
         destination[0] = (int16_t)(((int16_t)rawData[1] << 8) | rawData[0]);  // Turn the MSB and LSB into a signed 16-bit value
@@ -115,7 +115,7 @@
  
  int16_t readTempData(){
       uint8_t rawData[2];  // x/y/z gyro register data stored here
-      i2c_readBytes(0, MPU9250_ADDRESS, TEMP_OUT_H,  &rawData[0],2);  // Read the two raw data registers sequentially into data array 
+      i2c_read(0, MPU9250_ADDRESS, TEMP_OUT_H,  &rawData[0],2);  // Read the two raw data registers sequentially into data array 
       return (int16_t)(((int16_t)rawData[0]) << 8 | rawData[1]) ;  // Turn the MSB and LSB into a 16-bit value
     }
 
@@ -132,7 +132,7 @@
       sleep(100);
       i2c_writeBytes(0, AK8963_ADDRESS, AK8963_CNTL, 0x0F, 1); // Enter Fuse ROM access mode
       sleep(100);
-      i2c_readBytes(0, AK8963_ADDRESS, AK8963_ASAX,  &rawData[0],3);  // Read the x-, y-, and z-axis calibration values
+      i2c_read(0, AK8963_ADDRESS, AK8963_ASAX,  &rawData[0],3);  // Read the x-, y-, and z-axis calibration values
       destination[0] =  (float)(rawData[0] - 128)/256.0f + 1.0f;   // Return x-axis sensitivity adjustment values, etc.
       destination[1] =  (float)(rawData[1] - 128)/256.0f + 1.0f;  
       destination[2] =  (float)(rawData[2] - 128)/256.0f + 1.0f; 
@@ -239,13 +239,13 @@
 
         // At end of sample accumulation, turn off FIFO sensor read
         i2c_writeBytes(0, MPU9250_ADDRESS, FIFO_EN, 0x00,1);        // Disable gyro and accelerometer sensors for FIFO
-        i2c_readBytes(0, MPU9250_ADDRESS, FIFO_COUNTH,  &data[0],2); // read FIFO sample count
+        i2c_read(0, MPU9250_ADDRESS, FIFO_COUNTH,  &data[0],2); // read FIFO sample count
         fifo_count = ((uint16_t)data[0] << 8) | data[1];
         packet_count = fifo_count/12;// How many sets of full gyro and accelerometer data for averaging
 
         for (ii = 0; ii < packet_count; ii++) {
           int16_t accel_temp[3] = {0, 0, 0}, gyro_temp[3] = {0, 0, 0};
-          i2c_readBytes(0, MPU9250_ADDRESS, FIFO_R_W,  &data[0],12); // read data for averaging
+          i2c_read(0, MPU9250_ADDRESS, FIFO_R_W,  &data[0],12); // read data for averaging
           accel_temp[0] = (int16_t) (((int16_t)data[0] << 8) | data[1]  ) ;  // Form signed 16-bit integer for each sample in FIFO
           accel_temp[1] = (int16_t) (((int16_t)data[2] << 8) | data[3]  ) ;
           accel_temp[2] = (int16_t) (((int16_t)data[4] << 8) | data[5]  ) ;    
@@ -302,11 +302,11 @@
         // the accelerometer biases calculated above must be divided by 8.
 
         int32_t accel_bias_reg[3] = {0, 0, 0}; // A place to hold the factory accelerometer trim biases
-        i2c_readBytes(0,MPU9250_ADDRESS, XA_OFFSET_H,  &data[0],2); // Read factory accelerometer trim values
+        i2c_read(0,MPU9250_ADDRESS, XA_OFFSET_H,  &data[0],2); // Read factory accelerometer trim values
         accel_bias_reg[0] = (int16_t) ((int16_t)data[0] << 8) | data[1];
-        i2c_readBytes(0,MPU9250_ADDRESS, YA_OFFSET_H,  &data[0],2);
+        i2c_read(0,MPU9250_ADDRESS, YA_OFFSET_H,  &data[0],2);
         accel_bias_reg[1] = (int16_t) ((int16_t)data[0] << 8) | data[1];
-        i2c_readBytes(0,MPU9250_ADDRESS, ZA_OFFSET_H,  &data[0],2);
+        i2c_read(0,MPU9250_ADDRESS, ZA_OFFSET_H,  &data[0],2);
         accel_bias_reg[2] = (int16_t) ((int16_t)data[0] << 8) | data[1];
 
         uint32_t mask = 1uL; // Define mask for temperature compensation bit 0 of lower byte of accelerometer bias registers
@@ -364,13 +364,13 @@
   for( int ii = 0; ii < 200; ii++) { // get average current values of gyro and acclerometer
   
     // Read the six raw data registers into data array
-    i2c_readBytes(0,MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6); 
+    i2c_read(0,MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6); 
     aAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
     aAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
     aAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
 
     // Read the six raw data registers sequentially into data array
-    i2c_readBytes(0,MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6); 
+    i2c_read(0,MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6); 
     gAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
     gAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
     gAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
@@ -388,12 +388,12 @@
 
   for( int ii = 0; ii < 200; ii++) { // get average self-test values of gyro and acclerometer
   
-  i2c_readBytes(0,MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6); // Read the six raw data registers into data array
+  i2c_read(0,MPU9250_ADDRESS, ACCEL_XOUT_H,  &rawData[0],6); // Read the six raw data registers into data array
   aSTAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
   aSTAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
   aSTAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
   
-    i2c_readBytes(0, MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6); // Read the six raw data registers sequentially into data array
+    i2c_read(0, MPU9250_ADDRESS, GYRO_XOUT_H,  &rawData[0],6); // Read the six raw data registers sequentially into data array
   gSTAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ; // Turn the MSB and LSB into a signed 16-bit value
   gSTAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
   gSTAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
