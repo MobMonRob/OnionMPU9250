@@ -18,12 +18,13 @@ int main(){
 
     //t.start();
     int data;
+    int status_whoami;
     //TODO
     //Set up I2C
     //i2c.frequency(400000);  // use fast (400 kHz) I2C 
 
     // Read the WHO_AM_I register, this is a good test of communication
-    int status = i2c_readByte(0, MPU9250_ADDRESS, WHO_AM_I_MPU9250, &data);  // Read WHO_AM_I register for MPU-9250
+    int status_whoami = i2c_readByte(0, MPU9250_ADDRESS, WHO_AM_I_MPU9250, &data);  // Read WHO_AM_I register for MPU-9250
     if (data == 0x71){ // WHO_AM_I should always be 0x68
         resetMPU9250(); // Reset registers to default in preparation for device calibration
         MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
