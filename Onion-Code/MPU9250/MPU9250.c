@@ -1,31 +1,22 @@
 #include "MPU9250_header.h"
 #include "mpu9250_methoden.c"
 // TODO
-// Initialisierung i2c
-// read/writeByte Methoden ersetzen
-// printf Aufruf entsprechend der onion lib
-// Timer ersetzen?
+// Initialisierung i2c?
+// printf Aufruf entsprechend der onion lib?
 
 float sum = 0;
 uint32_t sumCount = 0;
 char buffer[14];
 
-//TODO
-//
-//Timer t;
-
 int main(){
 
     //t.start();
     int data;
-    int status_whoami;
-    //TODO
-    //Set up I2C
     //i2c.frequency(400000);  // use fast (400 kHz) I2C 
 
     // Read the WHO_AM_I register, this is a good test of communication
-    int status_whoami = i2c_readByte(0, MPU9250_ADDRESS, WHO_AM_I_MPU9250, &data);  // Read WHO_AM_I register for MPU-9250
-    if (data == 0x71){ // WHO_AM_I should always be 0x68
+    int status = i2c_readByte(0, MPU9250_ADDRESS, WHO_AM_I_MPU9250, &data);  // Read WHO_AM_I register for MPU-9250
+    if (data == 0x71){ // WHO_AM_I should always be 0x75
         resetMPU9250(); // Reset registers to default in preparation for device calibration
         MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
         printf("x-axis self test: acceleration trim within : %f of factory value\n\r", SelfTest[0]);  

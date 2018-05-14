@@ -1,11 +1,11 @@
 #include "MPU9250_header.h"
 
- void writeByte(uint8_t address, uint8_t subAddress, uint8_t data){
-        char data_write[2];
-        data_write[0] = subAddress;
-        data_write[1] = data;
-        i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
-    }
+ //void writeByte(uint8_t address, uint8_t subAddress, uint8_t data){
+ //       char data_write[2];
+ //       data_write[0] = subAddress;
+ //       data_write[1] = data;
+ //       i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
+ //   }
  
 // int readByte(uint8_t address, uint8_t subAddress){
 //        int data[1]; // `data` will store the register data     
@@ -195,7 +195,7 @@
       i2c_writeBytes(0,MPU9250_ADDRESS, INT_ENABLE, 0x01,1);  // Enable data ready (bit 0) interrupt
     }
  
- // Function which accumulates gyro and accelerometer data after device 
+    // Function which accumulates gyro and accelerometer data after device 
     // initialization. It calculates the average
     // of the at-rest readings and then loads the resulting offsets into 
     // accelerometer and gyro bias registers.
