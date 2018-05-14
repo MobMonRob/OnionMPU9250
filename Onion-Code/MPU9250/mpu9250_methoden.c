@@ -153,7 +153,9 @@
       usleep(100); // sleep 100 ms for PLL to get established on x-axis gyro; should check for PLL ready interrupt  
 
       // get stable time source
-      i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x01,1);  // Set clock source to be PLL with x-axis gyroscope reference, bits 2:0 = 001
+      // 001 = Auto selects the best available clock source – PLL if ready, else use the Internal oscillator
+      // Set clock source to be PLL with x-axis gyroscope reference, bits 2:0 = 001
+      i2c_writeBytes(0, MPU9250_ADDRESS, PWR_MGMT_1, 0x01,1);  
 
       // Configure Gyro and Accelerometer
       // Disable FSYNC and set accelerometer and gyro bandwidth to 44 and 42 Hz, respectively; 
@@ -634,8 +636,7 @@ int beta = 0;
  
         }
 
-int _i2c_getFd(int adapterNum, int *devHandle)
-{
+int _i2c_getFd(int adapterNum, int *devHandle){
 	int 	status;
 	char 	pathname[255];
 
@@ -695,8 +696,7 @@ int _i2c_setDevice(int devHandle, int addr)
 }
 
 // set the 10bit device address
-int _i2c_setDevice10bit(int devHandle, int addr)
-{
+int _i2c_setDevice10bit(int devHandle, int addr){
 #ifdef I2C_ENABLED
 	// set to 10-bit addr
 	if ( ioctl(devHandle, I2C_TENBIT, 1) < 0 ) {
@@ -776,14 +776,12 @@ int i2c_writeBuffer(int devNum, int devAddr, int addr, uint8_t *buffer, int size
 }
 
 // generic function to write a buffer to the i2c bus (no in-device address
-int i2c_writeBufferRaw(int devNum, int devAddr, uint8_t *buffer, int size)
-{
+int i2c_writeBufferRaw(int devNum, int devAddr, uint8_t *buffer, int size){
 	return _i2c_writeBuffer(devNum, devAddr, buffer, size);
 }
 
 // write n bytes to the i2c bus
-int i2c_write(int devNum, int devAddr, int addr, int val)
-{
+int i2c_write(int devNum, int devAddr, int addr, int val){
 	int 	status;
 	int 	size, tmp, index;
 	uint8_t	buffer[I2C_BUFFER_SIZE]; 
@@ -817,8 +815,7 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 }
 
 // write a specified number of bytes to the i2c bus
-int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
-{
+int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes){
 	int 	status;
 	int 	size, index;
 	uint8_t	buffer[I2C_BUFFER_SIZE];
@@ -847,8 +844,7 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 }
 
 // read a byte from the i2c bus
-int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
-{
+int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes){
 	int 	status, size, index;
 	int 	fd;
 
@@ -923,8 +919,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 }
 
 // read a byte from the i2c bus
-int i2c_readRaw(int devNum, int devAddr, uint8_t *buffer, int numBytes)
-{
+int i2c_readRaw(int devNum, int devAddr, uint8_t *buffer, int numBytes){
 	int 	status, size, index;
 	int 	fd;
 
@@ -951,8 +946,7 @@ int i2c_readRaw(int devNum, int devAddr, uint8_t *buffer, int numBytes)
 		if (status != size) {
 			//onionPrint(ONION_SEVERITY_FATAL, "%s read issue, errno is %d: %s\n", I2C_PRINT_BANNER, errno, strerror(errno) );
 			status 	= EXIT_FAILURE;
-		}
-		else {
+		} else {
 			status 	= EXIT_SUCCESS;
 		}
 #else
@@ -983,26 +977,17 @@ int i2c_readRaw(int devNum, int devAddr, uint8_t *buffer, int numBytes)
 	return (status);
 }
 
-// read a single byte from the i2c bus
-int i2c_readByte(int devNum, int devAddr, int addr, int *val)
-{
-	int 	status;
-	uint8_t	buffer[I2C_BUFFER_SIZE];
-
-	status	= i2c_read	(	devNum, 
-							devAddr, 
-							addr, 
-							buffer,
-							1
-						);
-
-	*val 	= (int)(buffer[0]);
-
-	return (status);
-}
-
-long getMicrotime(){
-	struct timeval currentTime;
-	gettimeofday(&currentTime, NULL);
-	return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
-}
+	// read a single byte from the i2c bus
+	int i2c_readByte(int devNum, int devAddr, int addr, int *val){
+		int 	status;
+		uint8_t	buffer[I2C_BUFFER_SIZE];
+		status	= i2c_read(devNum, devAddr, addr, buffer, 1);
+		*val 	= (int)(buffer[0]);
+		return (status);
+	}
+	// Timestamp in microseconds
+	long getMicrotime(){
+		struct timeval currentTime;
+		gettimeofday(&currentTime, NULL);
+		return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
+	}
