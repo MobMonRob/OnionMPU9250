@@ -1,8 +1,5 @@
 #include "MPU9250_header.h"
 #include "mpu9250_methoden.c"
-// TODO
-// Initialisierung i2c?
-// printf Aufruf entsprechend der onion lib?
 
 float sum = 0;
 uint32_t sumCount = 0;
@@ -19,7 +16,7 @@ int main(){
     if (data == 0x71){ // WHO_AM_I should always be 0x75
         printf("in if-schleife\n\r");
         resetMPU9250(); // Reset registers to default in preparation for device calibration
-        printf("nach reset\n\r");
+        printf("MPU9250 reseted...\n\r");
         
         // führt zu plausiblen Ausgaben
         //MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
@@ -39,12 +36,12 @@ int main(){
         //printf("z accel bias = %f\n\r", accelBias[2]);
         //printf("nach calibrate\n\r");  
         
-        //sleep(2000);
+        usleep(2000);
         initMPU9250(); 
-        printf("MPU9250 initialized for active data mode....\n\r"); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
+        printf("MPU9250 initialized for active data mode...\n\r"); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
         
         initAK8963(magCalibration);
-        printf("AK8963 initialized for active data mode....\n\r"); // Initialize device for active mode read of magnetometer
+        printf("AK8963 initialized for active data mode...\n\r"); // Initialize device for active mode read of magnetometer
         printf("Accelerometer full-scale range = %f  g\n\r", 2.0f*(float)(1<<Ascale));
         printf("Gyroscope full-scale range = %f  deg/s\n\r", 250.0f*(float)(1<<Gscale));
         if(Mscale == 0) printf("Magnetometer resolution = 14  bits\n\r");
