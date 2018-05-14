@@ -195,7 +195,7 @@
       i2c_writeBytes(0,MPU9250_ADDRESS, INT_ENABLE, 0x01,1);  // Enable data ready (bit 0) interrupt
     }
  
- // Function which accumulates gyro and accelerometer data after device 
+    // Function which accumulates gyro and accelerometer data after device 
     // initialization. It calculates the average
     // of the at-rest readings and then loads the resulting offsets into 
     // accelerometer and gyro bias registers.
