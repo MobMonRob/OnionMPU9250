@@ -1,11 +1,11 @@
 #include "MPU9250_header.h"
 
- void writeByte(uint8_t address, uint8_t subAddress, uint8_t data){
-        char data_write[2];
-        data_write[0] = subAddress;
-        data_write[1] = data;
-        i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
-    }
+ //void writeByte(uint8_t address, uint8_t subAddress, uint8_t data){
+ //       char data_write[2];
+ //       data_write[0] = subAddress;
+ //       data_write[1] = data;
+ //       i2c_writeBytes(0, address, data_write[0], data_write[1], 4);
+ //   }
  
 // int readByte(uint8_t address, uint8_t subAddress){
 //        int data[1]; // `data` will store the register data     
