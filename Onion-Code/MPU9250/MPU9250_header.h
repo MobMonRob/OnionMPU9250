@@ -179,9 +179,9 @@ int rdByte;
 // Set initial input parameters
 enum Ascale {
   AFS_2G = 0,
-  AFS_4G,
-  AFS_8G,
-  AFS_16G
+  AFS_4G = 0x08,
+  AFS_8G = 0x10,
+  AFS_16G = 0x18
 };
 
 enum Gscale {
@@ -196,7 +196,7 @@ enum Mscale {
   MFS_16BITS      // 0.15 mG per LSB
 };
 
-uint8_t Ascale = AFS_2G;     // AFS_2G, AFS_4G, AFS_8G, AFS_16G
+uint8_t Ascale = AFS_8G;     // AFS_2G, AFS_4G, AFS_8G, AFS_16G
 uint8_t Gscale = GFS_250DPS; // GFS_250DPS, GFS_500DPS, GFS_1000DPS, GFS_2000DPS
 uint8_t Mscale = MFS_16BITS; // MFS_14BITS or MFS_16BITS, 14-bit or 16-bit magnetometer resolution
 uint8_t Mmode = 0x06;        // Either 8 Hz 0x02) or 100 Hz (0x06) magnetometer data ODR  
