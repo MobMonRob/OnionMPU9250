@@ -177,11 +177,12 @@
 
 int rdByte;
 // Set initial input parameters
+// 2-bit values are shiftet to position 4:3 as described in Register-Map
 enum Ascale {
-  AFS_2G = 0,
-  AFS_4G = 1,
-  AFS_8G = 2,
-  AFS_16G = 3
+  AFS_2G = 0, //00
+  AFS_4G = 1, //01
+  AFS_8G = 2, //10
+  AFS_16G = 3 //11
 };
 
 enum Gscale {
