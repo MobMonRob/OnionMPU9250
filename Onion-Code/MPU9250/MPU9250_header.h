@@ -179,9 +179,9 @@ int rdByte;
 // Set initial input parameters
 enum Ascale {
   AFS_2G = 0,
-  AFS_4G = 0x08,
-  AFS_8G = 0x10,
-  AFS_16G = 0x18
+  AFS_4G = 1,
+  AFS_8G = 2,
+  AFS_16G = 3
 };
 
 enum Gscale {
